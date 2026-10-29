@@ -743,9 +743,13 @@ std::pair<int32_t, int32_t> card::get_atk_def(card_set* atk_sources) {
 	}
 	std::sort(eset.begin(), eset.end(), effect_sort_id);
 	if (atk_sources) {
-		for (effect_set::size_type i = 0; i < eset.size(); ++i)
+		for (effect_set::size_type i = 0; i < eset.size(); ++i) {
+			if ((eset[i]->code == EFFECT_UPDATE_ATTACK || eset[i]->code == EFFECT_UPDATE_DEFENSE)
+				&& eset[i]->get_value(this) == 0)
+				continue;
 			if (card* src = eset[i]->get_handler())
 				atk_sources->insert(src);
+		}
 	}
 	bool rev = false;
 	if (is_affected_by_effect(EFFECT_REVERSE_UPDATE))
