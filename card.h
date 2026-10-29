@@ -237,7 +237,7 @@ public:
 	uint32_t get_xyz_type();
 	uint32_t get_link_type();
 	std::pair<int32_t, int32_t> get_base_atk_def();
-	std::pair<int32_t, int32_t> get_atk_def();
+	std::pair<int32_t, int32_t> get_atk_def(card_set* atk_sources = nullptr);
 	int32_t get_base_attack();
 	int32_t get_attack();
 	int32_t get_base_defense();

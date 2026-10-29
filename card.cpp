@@ -687,7 +687,7 @@ std::pair<int32_t, int32_t> card::get_base_atk_def() {
 	temp.base_defense = -1;
 	return ret;
 }
-std::pair<int32_t, int32_t> card::get_atk_def() {
+std::pair<int32_t, int32_t> card::get_atk_def(card_set* atk_sources) {
 	if (assume_type == ASSUME_ATTACK)
 		return std::pair<int32_t, int32_t>(assume_value, 0);
 	if (assume_type == ASSUME_DEFENSE) {
@@ -742,6 +742,11 @@ std::pair<int32_t, int32_t> card::get_atk_def() {
 		filter_effect(EFFECT_SET_DEFENSE_FINAL, &eset, FALSE);
 	}
 	std::sort(eset.begin(), eset.end(), effect_sort_id);
+	if (atk_sources) {
+		for (effect_set::size_type i = 0; i < eset.size(); ++i)
+			if (card* src = eset[i]->get_handler())
+				atk_sources->insert(src);
+	}
 	bool rev = false;
 	if (is_affected_by_effect(EFFECT_REVERSE_UPDATE))
 		rev = true;

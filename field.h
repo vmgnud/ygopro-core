@@ -307,6 +307,7 @@ struct processor {
 	int32_t spe_effect[2]{};
 	int32_t last_select_hint[2]{ 0 };
 	uint32_t duel_options{ 0 };
+	uint8_t first_player{ 0 };
 	int32_t duel_rule{ CURRENT_RULE };
 	uint32_t copy_reset{ 0 };
 	int32_t copy_reset_count{ 0 };

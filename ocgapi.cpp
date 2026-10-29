@@ -95,10 +95,11 @@ void start_duel(intptr_t pduel, uint32_t options) {
 	pd->game_field->core.shuffle_hand_check[1] = FALSE;
 	pd->game_field->core.shuffle_deck_check[0] = FALSE;
 	pd->game_field->core.shuffle_deck_check[1] = FALSE;
-	if(pd->game_field->player[0].start_count > 0)
-		pd->game_field->draw(0, REASON_RULE, PLAYER_NONE, 0, pd->game_field->player[0].start_count);
-	if(pd->game_field->player[1].start_count > 0)
-		pd->game_field->draw(0, REASON_RULE, PLAYER_NONE, 1, pd->game_field->player[1].start_count);
+	for(int k = 0; k < 2; ++k) {
+		int p = pd->game_field->core.first_player ^ k;
+		if(pd->game_field->player[p].start_count > 0)
+			pd->game_field->draw(0, REASON_RULE, PLAYER_NONE, p, pd->game_field->player[p].start_count);
+	}
 	if(options & DUEL_TAG_MODE) {
 		for(int i = 0; i < pd->game_field->player[0].start_count && pd->game_field->player[0].tag_list_main.size(); ++i) {
 			card* pcard = pd->game_field->player[0].tag_list_main.back();
@@ -119,7 +120,7 @@ void start_duel(intptr_t pduel, uint32_t options) {
 			pcard->current.position = POS_FACEDOWN;
 		}
 	}
-	pd->game_field->add_process(PROCESSOR_TURN, 0, 0, 0, 0, 0);
+	pd->game_field->add_process(PROCESSOR_TURN, 0, 0, 0, pd->game_field->core.first_player, 0);
 }
 void end_duel(intptr_t pduel) {
 	duel* pd = (duel*)pduel;
@@ -138,6 +139,11 @@ void set_player_info(intptr_t pduel, int32_t playerid, int32_t lp, int32_t start
 		pd->game_field->player[playerid].start_count = startcount;
 	if(drawcount >= 0)
 		pd->game_field->player[playerid].draw_count = drawcount;
+}
+void set_first_player(intptr_t pduel, int32_t playerid) {
+	if (!check_playerid(playerid))
+		return;
+	((duel*)pduel)->game_field->core.first_player = (uint8_t)playerid;
 }
 void get_log_message(intptr_t pduel, char* buf) {
 	duel* pd = (duel*)pduel;
@@ -259,6 +265,34 @@ int32_t query_field_count(intptr_t pduel, uint8_t playerid, uint8_t location) {
 		return count;
 	}
 	return 0;
+}
+int32_t query_field_atk_sources(intptr_t pduel, uint8_t playerid, uint8_t location, uint8_t sequence, byte* buf, int32_t buflen) {
+	if (!check_playerid(playerid) || buflen < 4)
+		return LEN_FAIL;
+	duel* ptduel = (duel*)pduel;
+	auto& player = ptduel->game_field->player[playerid];
+	card* pcard = nullptr;
+	if (location == LOCATION_MZONE && sequence < player.list_mzone.size())
+		pcard = player.list_mzone[sequence];
+	else if (location == LOCATION_SZONE && sequence < player.list_szone.size())
+		pcard = player.list_szone[sequence];
+	card_set sources;
+	if (pcard)
+		pcard->get_atk_def(&sources);
+	std::set<uint32_t> infos;
+	for (auto* src : sources)
+		infos.insert(src->get_info_location());
+	byte* p = buf;
+	int32_t cap = (buflen - 4) / 4;
+	int32_t n = (int32_t)infos.size() < cap ? (int32_t)infos.size() : cap;
+	buffer_write<uint32_t>(p, (uint32_t)n);
+	int32_t k = 0;
+	for (uint32_t v : infos) {
+		if (k++ >= n)
+			break;
+		buffer_write<uint32_t>(p, v);
+	}
+	return (int32_t)(p - buf);
 }
 int32_t query_field_card(intptr_t pduel, uint8_t playerid, uint8_t location, uint32_t query_flag, byte* buf, int32_t use_cache) {
 	if (!check_playerid(playerid))

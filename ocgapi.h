@@ -43,6 +43,7 @@ OCGCORE_API intptr_t create_duel_v2(uint32_t seed_sequence[]);
 OCGCORE_API void start_duel(intptr_t pduel, uint32_t options);
 OCGCORE_API void end_duel(intptr_t pduel);
 OCGCORE_API void set_player_info(intptr_t pduel, int32_t playerid, int32_t lp, int32_t startcount, int32_t drawcount);
+OCGCORE_API void set_first_player(intptr_t pduel, int32_t playerid);
 OCGCORE_API void get_log_message(intptr_t pduel, char* buf);
 OCGCORE_API int32_t get_message(intptr_t pduel, byte* buf);
 OCGCORE_API uint32_t process(intptr_t pduel);
@@ -50,6 +51,7 @@ OCGCORE_API void new_card(intptr_t pduel, uint32_t code, uint8_t owner, uint8_t 
 OCGCORE_API void new_tag_card(intptr_t pduel, uint32_t code, uint8_t owner, uint8_t location);
 OCGCORE_API int32_t query_card(intptr_t pduel, uint8_t playerid, uint8_t location, uint8_t sequence, uint32_t query_flag, byte* buf, int32_t use_cache);
 OCGCORE_API int32_t query_field_count(intptr_t pduel, uint8_t playerid, uint8_t location);
+OCGCORE_API int32_t query_field_atk_sources(intptr_t pduel, uint8_t playerid, uint8_t location, uint8_t sequence, byte* buf, int32_t buflen);
 OCGCORE_API int32_t query_field_card(intptr_t pduel, uint8_t playerid, uint8_t location, uint32_t query_flag, byte* buf, int32_t use_cache);
 OCGCORE_API int32_t query_field_info(intptr_t pduel, byte* buf);
 OCGCORE_API void set_responsei(intptr_t pduel, int32_t value);
