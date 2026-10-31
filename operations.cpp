@@ -1653,7 +1653,7 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 			for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 				if(eset[i]->operation) {
 					core.sub_solving_event.push_back(nil_event);
-					add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, sumplayer, 0);
+					add_cost_operation(eset[i], sumplayer);
 				}
 			}
 			effect_set* peset = new effect_set;
@@ -1994,7 +1994,7 @@ int32_t field::flip_summon(uint16_t step, uint8_t sumplayer, card * target, uint
 			for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 				if(eset[i]->operation) {
 					core.sub_solving_event.push_back(nil_event);
-					add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, sumplayer, 0);
+					add_cost_operation(eset[i], sumplayer);
 				}
 			}
 			effect_set* peset = new effect_set;
@@ -2251,7 +2251,7 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 		for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 			if(eset[i]->operation) {
 				core.sub_solving_event.push_back(nil_event);
-				add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, setplayer, 0);
+				add_cost_operation(eset[i], setplayer);
 			}
 		}
 		return FALSE;
@@ -2457,7 +2457,7 @@ int32_t field::sset(uint16_t step, uint8_t setplayer, uint8_t toplayer, card * t
 		for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 			if(eset[i]->operation) {
 				core.sub_solving_event.push_back(nil_event);
-				add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, setplayer, 0);
+				add_cost_operation(eset[i], setplayer);
 			}
 		}
 		return FALSE;
@@ -2528,7 +2528,7 @@ int32_t field::sset_g(uint16_t step, uint8_t setplayer, uint8_t toplayer, group*
 			for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 				if(eset[i]->operation) {
 					core.sub_solving_event.push_back(nil_event);
-					add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, setplayer, 0);
+					add_cost_operation(eset[i], setplayer);
 				}
 			}
 		}
@@ -2771,7 +2771,7 @@ int32_t field::special_summon_rule(uint16_t step, uint8_t sumplayer, card* targe
 			for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 				if(eset[i]->operation) {
 					core.sub_solving_event.push_back(nil_event);
-					add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, sumplayer, 0);
+					add_cost_operation(eset[i], sumplayer);
 				}
 			}
 			effect_set* peset = new effect_set;
@@ -3037,7 +3037,7 @@ int32_t field::special_summon_rule(uint16_t step, uint8_t sumplayer, card* targe
 				for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 					if(eset[i]->operation) {
 						core.sub_solving_event.push_back(nil_event);
-						add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, sumplayer, 0);
+						add_cost_operation(eset[i], sumplayer);
 					}
 				}
 				effect_set* peset = new effect_set;
@@ -3258,7 +3258,7 @@ int32_t field::special_summon_step(uint16_t step, group* targets, card* target, 
 			for(effect_set::size_type i = 0; i < eset.size(); ++i) {
 				if(eset[i]->operation) {
 					core.sub_solving_event.push_back(nil_event);
-					add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, target->summon_player, 0);
+					add_cost_operation(eset[i], target->summon_player);
 				}
 			}
 			effect_set* peset = new effect_set;

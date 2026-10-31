@@ -14,6 +14,18 @@
 #include "ocgapi.h"
 #include <iterator>
 
+// YO3-268: a continuous *_COST effect pays through its operation with no chain link,
+// so announce its source card (MSG_HINT HINT_CARD, controller, code) like the
+// tribute-decrease path does; the host turns it into the activation cut-in.
+void field::add_cost_operation(effect* peffect, int32_t playerid) {
+	card* handler = peffect->get_handler();
+	pduel->write_buffer8(MSG_HINT);
+	pduel->write_buffer8(HINT_CARD);
+	pduel->write_buffer8(handler->current.controler);
+	pduel->write_buffer32(handler->data.code);
+	add_process(PROCESSOR_EXECUTE_OPERATION, 0, peffect, 0, playerid, 0);
+}
+
 void field::add_process(uint16_t type, uint16_t step, effect* peffect, group* target, int32_t arg1, int32_t arg2, int32_t arg3, int32_t arg4, void* ptr1, void* ptr2) {
 	processor_unit new_unit;
 	new_unit.type = type;
@@ -2543,7 +2555,7 @@ int32_t field::process_battle_command(uint16_t step) {
 				if(eset[i]->operation) {
 					core.attack_cancelable = FALSE;
 					core.sub_solving_event.push_back(nil_event);
-					add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, infos.turn_player, 0);
+					add_cost_operation(eset[i], infos.turn_player);
 					adjust_all();
 				}
 			}
@@ -4024,7 +4036,7 @@ int32_t field::add_chain(uint16_t step) {
 				continue;
 			if(eset[i]->operation) {
 				core.sub_solving_event.push_back(clit.evt);
-				add_process(PROCESSOR_EXECUTE_OPERATION, 0, eset[i], 0, clit.triggering_player, 0);
+				add_cost_operation(eset[i], clit.triggering_player);
 			}
 		}
 		if(peffect->type & EFFECT_TYPE_ACTIVATE) {
