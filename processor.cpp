@@ -4351,6 +4351,12 @@ int32_t field::solve_continuous(uint16_t step) {
 		if(!peffect->operation)
 			return FALSE;
 		peffect->dec_count(triggering_player);
+		// YO3-281: announce the continuous source; the host plays the cut-in only if the
+		// operation then prompts a player or moves LP (passive ticks stay silent).
+		pduel->write_buffer8(MSG_HINT);
+		pduel->write_buffer8(HINT_YO3_CONTI);
+		pduel->write_buffer8(peffect->get_handler()->current.controler);
+		pduel->write_buffer32(peffect->get_handler()->data.code);
 		core.sub_solving_event.push_back(clit.evt);
 		add_process(PROCESSOR_EXECUTE_OPERATION, 0, peffect, 0, triggering_player, 0);
 		return FALSE;
@@ -4358,6 +4364,11 @@ int32_t field::solve_continuous(uint16_t step) {
 	case 3: {
 		auto& clit = core.solving_continuous.front();
 		effect* peffect = clit.triggering_effect;
+		// YO3-281: operation finished; the host drops any unflushed marker (data 0).
+		pduel->write_buffer8(MSG_HINT);
+		pduel->write_buffer8(HINT_YO3_CONTI);
+		pduel->write_buffer8(0);
+		pduel->write_buffer32(0);
 		core.reason_effect = (effect*)core.units.begin()->ptarget;
 		core.reason_player = (uint8_t)core.units.begin()->arg2;
 		if(core.continuous_chain.back().target_cards)

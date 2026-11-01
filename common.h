@@ -368,6 +368,8 @@ inline bool check_playerid(int32_t playerid) {
 #define HINT_NUMBER				9
 #define HINT_CARD				10
 #define HINT_ZONE               11
+// YO3-281: host-only marker (never sent by Lua): a continuous effect operation is about to run.
+#define HINT_YO3_CONTI			100
 //
 #define CHINT_TURN				1
 #define CHINT_CARD				2
