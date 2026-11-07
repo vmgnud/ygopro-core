@@ -504,6 +504,14 @@ int32_t field::select_position(uint16_t step, uint8_t playerid, uint32_t code, u
 				returns.ivalue[0] = 0x2;
 			return TRUE;
 		}
+		card* ptarget_card = (card*)core.units.begin()->ptarget;
+		if(ptarget_card) {
+			// YO3-380: exact coordinates of the card being positioned.
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_LOC);
+			pduel->write_buffer8(playerid);
+			pduel->write_buffer32(ptarget_card->get_info_location());
+		}
 		pduel->write_buffer8(MSG_SELECT_POSITION);
 		pduel->write_buffer8(playerid);
 		pduel->write_buffer32(code);

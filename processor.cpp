@@ -2344,7 +2344,7 @@ int32_t field::process_idle_command(uint16_t step) {
 				positions |= POS_FACEDOWN_DEFENSE;
 			if(target->is_can_be_flip_summoned(infos.turn_player))
 				positions |= POS_FACEUP_ATTACK;
-			add_process(PROCESSOR_SELECT_POSITION, 0, 0, 0, infos.turn_player + (positions << 16), target->data.code);
+			add_process(PROCESSOR_SELECT_POSITION, 0, 0, (group*)target, infos.turn_player + (positions << 16), target->data.code);
 			core.units.begin()->step = 12;
 			return FALSE;
 		} else

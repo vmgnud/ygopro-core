@@ -382,6 +382,8 @@ inline bool check_playerid(int32_t playerid) {
 #define HINT_YO3_BATTLEDESTROY	105
 // YO3-379: host-only marker: summon/flip-summon negated monster sent away (data = get_info_location).
 #define HINT_YO3_SUMMONNEG		106
+// YO3-380: host-only marker: the immediately following MSG_DAMAGE has REASON_BATTLE.
+#define HINT_YO3_BATTLEDAMAGE	107
 //
 #define CHINT_TURN				1
 #define CHINT_CARD				2

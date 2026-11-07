@@ -525,6 +525,12 @@ int32_t field::damage(uint16_t step, effect* reason_effect, uint32_t reason, uin
 			core.units.begin()->step = 2;
 		core.hint_timing[playerid] |= TIMING_DAMAGE;
 		player[playerid].lp -= amount;
+		if(reason & REASON_BATTLE) {
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_BATTLEDAMAGE);
+			pduel->write_buffer8(playerid);
+			pduel->write_buffer32(amount);
+		}
 		pduel->write_buffer8(MSG_DAMAGE);
 		pduel->write_buffer8(playerid);
 		pduel->write_buffer32(amount);
@@ -4856,7 +4862,7 @@ int32_t field::move_to_field(uint16_t step, card* target, uint32_t enable, uint3
 			returns.ivalue[0] = POS_FACEUP_ATTACK;
 			return FALSE;
 		}
-		add_process(PROCESSOR_SELECT_POSITION, 0, 0, 0, (positions << 16) + move_player, target->data.code);
+		add_process(PROCESSOR_SELECT_POSITION, 0, 0, (group*)target, (positions << 16) + move_player, target->data.code);
 		return FALSE;
 	}
 	case 2: {

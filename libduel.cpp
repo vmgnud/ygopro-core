@@ -3893,7 +3893,7 @@ int32_t scriptlib::duel_select_position(lua_State * L) {
 	card* pcard = *(card**) lua_touserdata(L, 2);
 	uint32_t positions = (uint32_t)lua_tointeger(L, 3);
 	duel* pduel = interpreter::get_duel_info(L);
-	pduel->game_field->add_process(PROCESSOR_SELECT_POSITION, 0, 0, 0, playerid + (positions << 16), pcard->data.code);
+	pduel->game_field->add_process(PROCESSOR_SELECT_POSITION, 0, 0, (group*)pcard, playerid + (positions << 16), pcard->data.code);
 	return lua_yieldk(L, 0, (lua_KContext)pduel, [](lua_State *L, int32_t status, lua_KContext ctx) {
 		duel* pduel = (duel*)ctx;
 		lua_pushinteger(L, pduel->game_field->returns.ivalue[0]);
