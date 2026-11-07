@@ -372,6 +372,8 @@ inline bool check_playerid(int32_t playerid) {
 #define HINT_YO3_CONTI			100
 // YO3-374: host-only marker: the next MSG_SELECT_EFFECTYN is a player Summon/Set summon-procedure confirm.
 #define HINT_YO3_PROCSUM		101
+// YO3-375: host-only marker: the next MSG_SELECT_OPTION is a Summon/Set procedure menu (data = card); -1 aborts it.
+#define HINT_YO3_SUMOPT		102
 //
 #define CHINT_TURN				1
 #define CHINT_CARD				2

@@ -218,6 +218,7 @@ int32_t field::select_option(uint16_t step, uint8_t playerid) {
 		if(core.select_options.size() == 0)
 			return TRUE;
 		if((playerid == 1) && (core.duel_options & DUEL_SIMPLE_AI)) {
+			core.summon_option_cancel = FALSE;
 			returns.ivalue[0] = 0;
 			return TRUE;
 		}
@@ -228,10 +229,16 @@ int32_t field::select_option(uint16_t step, uint8_t playerid) {
 			pduel->write_buffer32(option);
 		return FALSE;
 	} else {
+		// YO3-375: a Summon/Set procedure menu may be dismissed with -1 (the summon aborts).
+		if(returns.ivalue[0] == -1 && core.summon_option_cancel) {
+			core.summon_option_cancel = FALSE;
+			return TRUE;
+		}
 		if(returns.ivalue[0] < 0 || returns.ivalue[0] >= (int32_t)core.select_options.size()) {
 			pduel->write_buffer8(MSG_RETRY);
 			return FALSE;
 		}
+		core.summon_option_cancel = FALSE;
 		return TRUE;
 	}
 }

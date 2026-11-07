@@ -280,6 +280,7 @@ struct processor {
 	card* summoning_card{ nullptr };
 	uint8_t summon_depth{ 0 };
 	uint8_t summon_cancelable{ FALSE };
+	uint8_t summon_option_cancel{ FALSE };
 	card* attacker{ nullptr };
 	card* attack_target{ nullptr };
 	uint8_t attacker_player{ PLAYER_NONE };

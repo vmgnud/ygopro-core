@@ -1504,8 +1504,15 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 						add_process(PROCESSOR_SELECT_EFFECTYN, 0, 0, (group*)target, sumplayer, core.select_effects[0]->description);
 						core.units.begin()->value3 = 1;
 					}
-				} else
+				} else {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_SUMOPT);
+					pduel->write_buffer8(sumplayer);
+					pduel->write_buffer32(target->data.code);
+					core.summon_option_cancel = TRUE;
+					core.units.begin()->value3 = 2;
 					add_process(PROCESSOR_SELECT_OPTION, 0, 0, 0, sumplayer, 0);
+				}
 			}
 		}
 		if(core.summon_depth)
@@ -1529,12 +1536,18 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 			return FALSE;
 		}
 		if(core.units.begin()->value3) {
+			int32_t kind = core.units.begin()->value3;
 			core.units.begin()->value3 = 0;
-			if(returns.ivalue[0] != 1) {
+			if(kind == 1) {
+				if(returns.ivalue[0] != 1) {
+					--core.summon_depth;
+					return TRUE;
+				}
+				returns.ivalue[0] = 0;
+			} else if(returns.ivalue[0] < 0) {
 				--core.summon_depth;
 				return TRUE;
 			}
-			returns.ivalue[0] = 0;
 		}
 		if(!proc) {
 			proc = core.select_effects[returns.ivalue[0]];
@@ -1580,11 +1593,25 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 		}
 		if(core.select_options.size() == 1)
 			returns.ivalue[0] = 0;
-		else
+		else {
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_SUMOPT);
+			pduel->write_buffer8(sumplayer);
+			pduel->write_buffer32(target->data.code);
+			core.summon_option_cancel = TRUE;
+			core.units.begin()->value3 = 3;
 			add_process(PROCESSOR_SELECT_OPTION, 0, 0, 0, sumplayer, 0);
+		}
 		return FALSE;
 	}
 	case 2: {
+		if(core.units.begin()->value3 == 3) {
+			core.units.begin()->value3 = 0;
+			if(returns.ivalue[0] < 0) {
+				--core.summon_depth;
+				return TRUE;
+			}
+		}
 		effect* pextra = core.select_effects[returns.ivalue[0]];
 		core.units.begin()->ptr1 = pextra;
 		int32_t releasable = 0xff00ff;
@@ -2139,8 +2166,15 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 					add_process(PROCESSOR_SELECT_EFFECTYN, 0, 0, (group*)target, setplayer, core.select_effects[0]->description);
 					core.units.begin()->value3 = 1;
 				}
-			} else
+			} else {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_SUMOPT);
+				pduel->write_buffer8(setplayer);
+				pduel->write_buffer32(target->data.code);
+				core.summon_option_cancel = TRUE;
+				core.units.begin()->value3 = 2;
 				add_process(PROCESSOR_SELECT_OPTION, 0, 0, 0, setplayer, 0);
+			}
 		}
 		target->material_cards.clear();
 		return FALSE;
@@ -2149,10 +2183,14 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 		effect_set eset;
 		target->filter_effect(EFFECT_EXTRA_SET_COUNT, &eset);
 		if(core.units.begin()->value3) {
+			int32_t kind = core.units.begin()->value3;
 			core.units.begin()->value3 = 0;
-			if(returns.ivalue[0] != 1)
+			if(kind == 1) {
+				if(returns.ivalue[0] != 1)
+					return TRUE;
+				returns.ivalue[0] = 0;
+			} else if(returns.ivalue[0] < 0)
 				return TRUE;
-			returns.ivalue[0] = 0;
 		}
 		if(!proc) {
 			proc = core.select_effects[returns.ivalue[0]];
@@ -2198,11 +2236,23 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 		}
 		if(core.select_options.size() == 1)
 			returns.ivalue[0] = 0;
-		else
+		else {
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_SUMOPT);
+			pduel->write_buffer8(setplayer);
+			pduel->write_buffer32(target->data.code);
+			core.summon_option_cancel = TRUE;
+			core.units.begin()->value3 = 3;
 			add_process(PROCESSOR_SELECT_OPTION, 0, 0, 0, setplayer, 0);
+		}
 		return FALSE;
 	}
 	case 2: {
+		if(core.units.begin()->value3 == 3) {
+			core.units.begin()->value3 = 0;
+			if(returns.ivalue[0] < 0)
+				return TRUE;
+		}
 		effect* pextra = core.select_effects[returns.ivalue[0]];
 		core.units.begin()->ptr1 = pextra;
 		int32_t releasable = 0xff00ff;
