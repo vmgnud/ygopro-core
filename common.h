@@ -378,6 +378,10 @@ inline bool check_playerid(int32_t playerid) {
 #define HINT_YO3_LOC			103
 // YO3-377: host-only marker: replacement effect accepted (data = passcode of replace_effect handler).
 #define HINT_YO3_REPLACE		104
+// YO3-379: host-only marker: monster destroyed by battle being sent away (data = p3 flags).
+#define HINT_YO3_BATTLEDESTROY	105
+// YO3-379: host-only marker: summon/flip-summon negated monster sent away (data = get_info_location).
+#define HINT_YO3_SUMMONNEG		106
 //
 #define CHINT_TURN				1
 #define CHINT_CARD				2

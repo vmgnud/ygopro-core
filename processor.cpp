@@ -2980,6 +2980,13 @@ int32_t field::process_battle_command(uint16_t step) {
 		if(bd[0]) {
 			effect* indestructable_effect = core.attacker->is_affected_by_effect(EFFECT_INDESTRUCTABLE_BATTLE, core.attack_target);
 			if(indestructable_effect) {
+				card* ih = indestructable_effect->get_handler();
+				if(ih) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(ih->current.controler);
+					pduel->write_buffer32(ih->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
 				pduel->write_buffer8(0);
@@ -2991,6 +2998,13 @@ int32_t field::process_battle_command(uint16_t step) {
 		if(bd[1]) {
 			effect* indestructable_effect = core.attack_target->is_affected_by_effect(EFFECT_INDESTRUCTABLE_BATTLE, core.attacker);
 			if(indestructable_effect) {
+				card* ih = indestructable_effect->get_handler();
+				if(ih) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(ih->current.controler);
+					pduel->write_buffer32(ih->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
 				pduel->write_buffer8(0);
@@ -4359,19 +4373,17 @@ int32_t field::solve_continuous(uint16_t step) {
 		peffect->dec_count(triggering_player);
 		// YO3-281: announce the continuous source; the host plays the cut-in only if the
 		// operation then prompts a player or moves LP (passive ticks stay silent).
-		card* phandler = peffect->get_handler();
-		if (phandler) {
+		card* powner = peffect->get_owner();
+		if(powner) {
 			pduel->write_buffer8(MSG_HINT);
 			pduel->write_buffer8(HINT_YO3_LOC);
-			pduel->write_buffer8(phandler->current.controler);
-			pduel->write_buffer32(phandler->get_info_location());
+			pduel->write_buffer8(powner->current.controler);
+			pduel->write_buffer32(powner->get_info_location());
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_CONTI);
+			pduel->write_buffer8(powner->current.controler);
+			pduel->write_buffer32(powner->data.code);
 		}
-		pduel->write_buffer8(MSG_HINT);
-		pduel->write_buffer8(HINT_YO3_CONTI);
-		// YO3-368: name the effect OWNER (the script's card), not the handler: an effect
-		// registered on another card (Swordsman from a Foreign Land) has the victim as handler.
-		pduel->write_buffer8(peffect->get_owner()->current.controler);
-		pduel->write_buffer32(peffect->get_owner()->data.code);
 		core.sub_solving_event.push_back(clit.evt);
 		add_process(PROCESSOR_EXECUTE_OPERATION, 0, peffect, 0, triggering_player, 0);
 		return FALSE;

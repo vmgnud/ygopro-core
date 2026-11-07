@@ -1739,9 +1739,16 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 						continue;
 				}
 				min -= dec & 0xffff;
+				card* phandler = eset[i]->get_handler();
+				if(phandler) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(phandler->current.controler);
+					pduel->write_buffer32(phandler->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
-				pduel->write_buffer8(0);
+				pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 				pduel->write_buffer32(eset[i]->handler->data.code);
 			}
 			for(effect_set::size_type i = 0; i < eset.size() && min > 0; ++i) {
@@ -1760,9 +1767,16 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 				}
 				min -= dec & 0xffff;
 				eset[i]->dec_count();
+				card* phandler = eset[i]->get_handler();
+				if(phandler) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(phandler->current.controler);
+					pduel->write_buffer32(phandler->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
-				pduel->write_buffer8(0);
+				pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 				pduel->write_buffer32(eset[i]->handler->data.code);
 			}
 			for(effect_set::size_type i = 0; i < eset.size() && min > 0; ++i) {
@@ -1781,9 +1795,16 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 				}
 				min -= dec & 0xffff;
 				eset[i]->dec_count();
+				card* phandler = eset[i]->get_handler();
+				if(phandler) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(phandler->current.controler);
+					pduel->write_buffer32(phandler->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
-				pduel->write_buffer8(0);
+				pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 				pduel->write_buffer32(eset[i]->handler->data.code);
 			}
 		}
@@ -1835,9 +1856,16 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 			++core.summon_count[sumplayer];
 		else {
 			core.extra_summon[sumplayer] = TRUE;
+			card* phandler = pextra->get_handler();
+			if(phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+			}
 			pduel->write_buffer8(MSG_HINT);
 			pduel->write_buffer8(HINT_CARD);
-			pduel->write_buffer8(0);
+			pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 			pduel->write_buffer32(pextra->handler->data.code);
 			if(pextra->operation) {
 				pduel->lua->add_param(target, PARAM_TYPE_CARD);
@@ -1889,9 +1917,16 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 			++core.summon_count[sumplayer];
 		else {
 			core.extra_summon[sumplayer] = TRUE;
+			card* phandler = pextra->get_handler();
+			if(phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+			}
 			pduel->write_buffer8(MSG_HINT);
 			pduel->write_buffer8(HINT_CARD);
-			pduel->write_buffer8(0);
+			pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 			pduel->write_buffer32(pextra->handler->data.code);
 			if(pextra->operation) {
 				pduel->lua->add_param(target, PARAM_TYPE_CARD);
@@ -2371,9 +2406,16 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 						continue;
 				}
 				min -= dec & 0xffff;
+				card* phandler = eset[i]->get_handler();
+				if(phandler) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(phandler->current.controler);
+					pduel->write_buffer32(phandler->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
-				pduel->write_buffer8(0);
+				pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 				pduel->write_buffer32(eset[i]->handler->data.code);
 			}
 			for(effect_set::size_type i = 0; i < eset.size() && min > 0; ++i) {
@@ -2392,9 +2434,16 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 				}
 				min -= dec & 0xffff;
 				eset[i]->dec_count();
+				card* phandler = eset[i]->get_handler();
+				if(phandler) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(phandler->current.controler);
+					pduel->write_buffer32(phandler->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
-				pduel->write_buffer8(0);
+				pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 				pduel->write_buffer32(eset[i]->handler->data.code);
 			}
 			for(effect_set::size_type i = 0; i < eset.size() && min > 0; ++i) {
@@ -2413,9 +2462,16 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 				}
 				min -= dec & 0xffff;
 				eset[i]->dec_count();
+				card* phandler = eset[i]->get_handler();
+				if(phandler) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_LOC);
+					pduel->write_buffer8(phandler->current.controler);
+					pduel->write_buffer32(phandler->get_info_location());
+				}
 				pduel->write_buffer8(MSG_HINT);
 				pduel->write_buffer8(HINT_CARD);
-				pduel->write_buffer8(0);
+				pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 				pduel->write_buffer32(eset[i]->handler->data.code);
 			}
 		}
@@ -2456,9 +2512,16 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 			++core.summon_count[setplayer];
 		else {
 			core.extra_summon[setplayer] = TRUE;
+			card* phandler = pextra->get_handler();
+			if(phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+			}
 			pduel->write_buffer8(MSG_HINT);
 			pduel->write_buffer8(HINT_CARD);
-			pduel->write_buffer8(0);
+			pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 			pduel->write_buffer32(pextra->handler->data.code);
 			if(pextra->operation) {
 				pduel->lua->add_param(target, PARAM_TYPE_CARD);
@@ -3681,9 +3744,16 @@ int32_t field::destroy(uint16_t step, group * targets, effect * reason_effect, u
 		}
 		for (auto& peffect : indestructable_effect_set) {
 			peffect->dec_count();
+			card* phandler = peffect->get_handler();
+			if(phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+			}
 			pduel->write_buffer8(MSG_HINT);
 			pduel->write_buffer8(HINT_CARD);
-			pduel->write_buffer8(0);
+			pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 			pduel->write_buffer32(peffect->owner->data.code);
 		}
 		operation_replace(EFFECT_DESTROY_REPLACE, 5, targets);
@@ -3785,9 +3855,16 @@ int32_t field::destroy(uint16_t step, group * targets, effect * reason_effect, u
 					pduel->lua->add_param(pcard->current.reason, PARAM_TYPE_INT);
 					pduel->lua->add_param(pcard->current.reason_player, PARAM_TYPE_INT);
 					if(eset[i]->check_value_condition(3)) {
+						card* phandler = eset[i]->get_handler();
+						if(phandler) {
+							pduel->write_buffer8(MSG_HINT);
+							pduel->write_buffer8(HINT_YO3_LOC);
+							pduel->write_buffer8(phandler->current.controler);
+							pduel->write_buffer32(phandler->get_info_location());
+						}
 						pduel->write_buffer8(MSG_HINT);
 						pduel->write_buffer8(HINT_CARD);
-						pduel->write_buffer8(0);
+						pduel->write_buffer8(phandler ? phandler->current.controler : 0);
 						pduel->write_buffer32(eset[i]->owner->data.code);
 						indes = true;
 						break;
@@ -4242,6 +4319,22 @@ int32_t field::send_to(uint16_t step, group * targets, effect * reason_effect, u
 			core.hint_timing[control_player] |= TIMING_REMOVE;
 		}
 		if(pcard->current.controler != playerid || pcard->current.location != dest) {
+			if(pcard->current.location == LOCATION_MZONE && (dest & (LOCATION_GRAVE | LOCATION_REMOVED))) {
+				if(pcard->current.reason & REASON_BATTLE) {
+					uint32_t bd_flags = 0x2 | ((pcard == core.attack_target && (pcard->current.position & POS_DEFENSE)) ? 0x1 : 0);
+					uint32_t p3 = (pcard->current.controler == 0) ? bd_flags : (bd_flags << 8);
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_BATTLEDESTROY);
+					pduel->write_buffer8(pcard->current.controler);
+					pduel->write_buffer32(p3);
+				}
+				if(pcard->status & (STATUS_SUMMON_DISABLED | STATUS_FLIP_SUMMON_DISABLED)) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_SUMMONNEG);
+					pduel->write_buffer8(pcard->current.controler);
+					pduel->write_buffer32(pcard->get_info_location());
+				}
+			}
 			pduel->write_buffer8(MSG_MOVE);
 			pduel->write_buffer32(pcard->data.code);
 			pduel->write_buffer32(pcard->get_info_location());

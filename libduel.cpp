@@ -3766,6 +3766,21 @@ int32_t scriptlib::duel_hint(lua_State * L) {
 	if(htype == HINT_OPSELECTED)
 		playerid = 1 - playerid;
 	duel* pduel = interpreter::get_duel_info(L);
+	if(htype == HINT_CARD) {
+		card* psrc = nullptr;
+		if(pduel->game_field->core.reason_effect) {
+			psrc = pduel->game_field->core.reason_effect->get_owner();
+			if(!psrc || !(psrc->current.location & (LOCATION_ONFIELD | LOCATION_GRAVE | LOCATION_REMOVED | LOCATION_HAND)))
+				psrc = pduel->game_field->core.reason_effect->get_handler();
+		}
+		if(psrc) {
+			playerid = psrc->current.controler;
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_LOC);
+			pduel->write_buffer8(playerid);
+			pduel->write_buffer32(psrc->get_info_location());
+		}
+	}
 	if(htype == HINT_SELECTMSG)
 		pduel->game_field->core.last_select_hint[playerid] = desc;
 	pduel->write_buffer8(MSG_HINT);
@@ -3811,6 +3826,19 @@ int32_t scriptlib::duel_select_effect_yesno(lua_State * L) {
 	pduel->game_field->add_process(PROCESSOR_SELECT_EFFECTYN, 0, 0, (group*)pcard, playerid, desc);
 	return lua_yieldk(L, 0, (lua_KContext)pduel, [](lua_State *L, int32_t status, lua_KContext ctx) {
 		duel* pduel = (duel*)ctx;
+		if(pduel->game_field->returns.ivalue[0]) {
+			card* pcard = *(card**) lua_touserdata(L, 2);
+			if(pcard) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(pcard->current.controler);
+				pduel->write_buffer32(pcard->get_info_location());
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_REPLACE);
+				pduel->write_buffer8(pcard->current.controler);
+				pduel->write_buffer32(pcard->data.code);
+			}
+		}
 		lua_pushboolean(L, pduel->game_field->returns.ivalue[0]);
 		return 1;
 	});
