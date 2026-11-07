@@ -1491,9 +1491,20 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 				}
 				if (core.select_options.empty())
 					return TRUE;
-				if(core.select_options.size() == 1)
+				if(core.select_options.size() == 1) {
 					returns.ivalue[0] = 0;
-				else
+					// YO3-374: a player Normal Summon whose only option is a summon procedure
+					// (e.g. Sauropod Brachion) skips every prompt, and the proc's own
+					// Duel.SelectTribute is non-cancelable. Ask yes/no first; No aborts the summon.
+					if(core.select_effects[0] && core.summon_cancelable && !core.summon_depth) {
+						pduel->write_buffer8(MSG_HINT);
+						pduel->write_buffer8(HINT_YO3_PROCSUM);
+						pduel->write_buffer8(sumplayer);
+						pduel->write_buffer32(target->data.code);
+						add_process(PROCESSOR_SELECT_EFFECTYN, 0, 0, (group*)target, sumplayer, core.select_effects[0]->description);
+						core.units.begin()->value3 = 1;
+					}
+				} else
 					add_process(PROCESSOR_SELECT_OPTION, 0, 0, 0, sumplayer, 0);
 			}
 		}
@@ -1516,6 +1527,14 @@ int32_t field::summon(uint16_t step, uint8_t sumplayer, card* target, effect* pr
 			}
 			core.units.begin()->ptr1 = 0;
 			return FALSE;
+		}
+		if(core.units.begin()->value3) {
+			core.units.begin()->value3 = 0;
+			if(returns.ivalue[0] != 1) {
+				--core.summon_depth;
+				return TRUE;
+			}
+			returns.ivalue[0] = 0;
 		}
 		if(!proc) {
 			proc = core.select_effects[returns.ivalue[0]];
@@ -2109,9 +2128,18 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 				core.select_effects.push_back(eset[i]);
 				core.select_options.push_back(eset[i]->description);
 			}
-			if(core.select_options.size() == 1)
+			if(core.select_options.size() == 1) {
 				returns.ivalue[0] = 0;
-			else
+				// YO3-374: same confirm for a player Normal Set through EFFECT_SET_PROC.
+				if(core.select_effects[0] && core.summon_cancelable) {
+					pduel->write_buffer8(MSG_HINT);
+					pduel->write_buffer8(HINT_YO3_PROCSUM);
+					pduel->write_buffer8(setplayer);
+					pduel->write_buffer32(target->data.code);
+					add_process(PROCESSOR_SELECT_EFFECTYN, 0, 0, (group*)target, setplayer, core.select_effects[0]->description);
+					core.units.begin()->value3 = 1;
+				}
+			} else
 				add_process(PROCESSOR_SELECT_OPTION, 0, 0, 0, setplayer, 0);
 		}
 		target->material_cards.clear();
@@ -2120,6 +2148,12 @@ int32_t field::mset(uint16_t step, uint8_t setplayer, card* target, effect* proc
 	case 1: {
 		effect_set eset;
 		target->filter_effect(EFFECT_EXTRA_SET_COUNT, &eset);
+		if(core.units.begin()->value3) {
+			core.units.begin()->value3 = 0;
+			if(returns.ivalue[0] != 1)
+				return TRUE;
+			returns.ivalue[0] = 0;
+		}
 		if(!proc) {
 			proc = core.select_effects[returns.ivalue[0]];
 			core.units.begin()->peffect = proc;
