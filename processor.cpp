@@ -4355,8 +4355,10 @@ int32_t field::solve_continuous(uint16_t step) {
 		// operation then prompts a player or moves LP (passive ticks stay silent).
 		pduel->write_buffer8(MSG_HINT);
 		pduel->write_buffer8(HINT_YO3_CONTI);
-		pduel->write_buffer8(peffect->get_handler()->current.controler);
-		pduel->write_buffer32(peffect->get_handler()->data.code);
+		// YO3-368: name the effect OWNER (the script's card), not the handler: an effect
+		// registered on another card (Swordsman from a Foreign Land) has the victim as handler.
+		pduel->write_buffer8(peffect->get_owner()->current.controler);
+		pduel->write_buffer32(peffect->get_owner()->data.code);
 		core.sub_solving_event.push_back(clit.evt);
 		add_process(PROCESSOR_EXECUTE_OPERATION, 0, peffect, 0, triggering_player, 0);
 		return FALSE;
