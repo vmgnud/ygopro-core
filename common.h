@@ -374,6 +374,10 @@ inline bool check_playerid(int32_t playerid) {
 #define HINT_YO3_PROCSUM		101
 // YO3-375: host-only marker: the next MSG_SELECT_OPTION is a Summon/Set procedure menu (data = card); -1 aborts it.
 #define HINT_YO3_SUMOPT		102
+// YO3-377: host-only marker: exact (controller, location, sequence, position) of the activating/protecting card.
+#define HINT_YO3_LOC			103
+// YO3-377: host-only marker: replacement effect accepted (data = passcode of replace_effect handler).
+#define HINT_YO3_REPLACE		104
 //
 #define CHINT_TURN				1
 #define CHINT_CARD				2

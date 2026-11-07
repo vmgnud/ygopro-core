@@ -3815,6 +3815,13 @@ int32_t field::destroy(uint16_t step, group * targets, effect * reason_effect, u
 						pduel->lua->add_param(pcard->current.reason_player, PARAM_TYPE_INT);
 						if(eset[i]->check_value_condition(3)) {
 							eset[i]->dec_count();
+							card* phandler = eset[i]->get_handler();
+							if (phandler) {
+								pduel->write_buffer8(MSG_HINT);
+								pduel->write_buffer8(HINT_YO3_LOC);
+								pduel->write_buffer8(phandler->current.controler);
+								pduel->write_buffer32(phandler->get_info_location());
+							}
 							pduel->write_buffer8(MSG_HINT);
 							pduel->write_buffer8(HINT_CARD);
 							pduel->write_buffer8(0);
@@ -3829,6 +3836,13 @@ int32_t field::destroy(uint16_t step, group * targets, effect * reason_effect, u
 						if(ct) {
 							auto it = pcard->indestructable_effects.emplace(eset[i]->id, 0);
 							if(++it.first->second <= ct) {
+								card* phandler = eset[i]->get_handler();
+								if (phandler) {
+									pduel->write_buffer8(MSG_HINT);
+									pduel->write_buffer8(HINT_YO3_LOC);
+									pduel->write_buffer8(phandler->current.controler);
+									pduel->write_buffer32(phandler->get_info_location());
+								}
 								pduel->write_buffer8(MSG_HINT);
 								pduel->write_buffer8(HINT_CARD);
 								pduel->write_buffer8(0);
@@ -5109,6 +5123,17 @@ int32_t field::operation_replace(uint16_t step, effect* replace_effect, group* t
 	}
 	case 1: {
 		if (returns.ivalue[0]) {
+			card* phandler = replace_effect->get_handler();
+			if (phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_REPLACE);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->data.code);
+			}
 			if(!(target->current.reason_effect && target->current.reason_effect->is_self_destroy_related())) {
 				targets->container.erase(target);
 				target->current.reason = target->temp.reason;
@@ -5173,6 +5198,17 @@ int32_t field::operation_replace(uint16_t step, effect* replace_effect, group* t
 	}
 	case 6: {
 		if (returns.ivalue[0]) {
+			card* phandler = replace_effect->get_handler();
+			if (phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_REPLACE);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->data.code);
+			}
 			for (auto cit = targets->container.begin(); cit != targets->container.end();) {
 				if(replace_effect->get_value(*cit) && !((*cit)->current.reason_effect && (*cit)->current.reason_effect->is_self_destroy_related())) {
 					(*cit)->current.reason = (*cit)->temp.reason;
@@ -5241,6 +5277,17 @@ int32_t field::operation_replace(uint16_t step, effect* replace_effect, group* t
 	}
 	case 11: {
 		if (returns.ivalue[0]) {
+			card* phandler = replace_effect->get_handler();
+			if (phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_REPLACE);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->data.code);
+			}
 			targets->container.erase(target);
 			target->current.reason = target->temp.reason;
 			target->current.reason_effect = target->temp.reason_effect;
@@ -5285,6 +5332,17 @@ int32_t field::operation_replace(uint16_t step, effect* replace_effect, group* t
 	}
 	case 13: {
 		if (returns.ivalue[0]) {
+			card* phandler = replace_effect->get_handler();
+			if (phandler) {
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_LOC);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->get_info_location());
+				pduel->write_buffer8(MSG_HINT);
+				pduel->write_buffer8(HINT_YO3_REPLACE);
+				pduel->write_buffer8(phandler->current.controler);
+				pduel->write_buffer32(phandler->data.code);
+			}
 			for (auto cit = targets->container.begin(); cit != targets->container.end();) {
 				if (replace_effect->get_value(*cit)) {
 					(*cit)->current.reason = (*cit)->temp.reason;

@@ -19,10 +19,16 @@
 // tribute-decrease path does; the host turns it into the activation cut-in.
 void field::add_cost_operation(effect* peffect, int32_t playerid) {
 	card* handler = peffect->get_handler();
+	if (handler) {
+		pduel->write_buffer8(MSG_HINT);
+		pduel->write_buffer8(HINT_YO3_LOC);
+		pduel->write_buffer8(handler->current.controler);
+		pduel->write_buffer32(handler->get_info_location());
+	}
 	pduel->write_buffer8(MSG_HINT);
 	pduel->write_buffer8(HINT_CARD);
-	pduel->write_buffer8(handler->current.controler);
-	pduel->write_buffer32(handler->data.code);
+	pduel->write_buffer8(handler ? handler->current.controler : 0);
+	pduel->write_buffer32(handler ? handler->data.code : 0);
 	add_process(PROCESSOR_EXECUTE_OPERATION, 0, peffect, 0, playerid, 0);
 }
 
@@ -4353,6 +4359,13 @@ int32_t field::solve_continuous(uint16_t step) {
 		peffect->dec_count(triggering_player);
 		// YO3-281: announce the continuous source; the host plays the cut-in only if the
 		// operation then prompts a player or moves LP (passive ticks stay silent).
+		card* phandler = peffect->get_handler();
+		if (phandler) {
+			pduel->write_buffer8(MSG_HINT);
+			pduel->write_buffer8(HINT_YO3_LOC);
+			pduel->write_buffer8(phandler->current.controler);
+			pduel->write_buffer32(phandler->get_info_location());
+		}
 		pduel->write_buffer8(MSG_HINT);
 		pduel->write_buffer8(HINT_YO3_CONTI);
 		// YO3-368: name the effect OWNER (the script's card), not the handler: an effect
